@@ -149,6 +149,7 @@ PACKAGES="$PACKAGES shadowsocksr-libev-ssr-redir"
 PACKAGES="$PACKAGES bash"
 PACKAGES="$PACKAGES kmod-tun"
 PACKAGES="$PACKAGES kmod-xdp-sockets-diag"
+PACKAGES="$PACKAGES kmod-tcp-bbr"
 
 # 博通无线网卡核心驱动
 PACKAGES="$PACKAGES kmod-brcmfmac"
