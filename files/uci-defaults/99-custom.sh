@@ -72,10 +72,10 @@ elif [ "$count" -gt 1 ]; then
         echo "ports of device 'br-lan' are update." >>$LOGFILE
     fi
     # LAN口设置静态IP
+    # 注意：如果是单网口且用户在 Action 选了 DHCP，Workflow 会删掉下面这两行并把 proto 改为 dhcp
     uci set network.lan.proto='static'
-    # 多网口设备 支持修改为别的ip地址,别的地址应该是网关地址，形如192.168.xx.1 项目说明里都强调过。
-    uci set network.lan.ipaddr='__IPADDR__'
     uci set network.lan.netmask='255.255.255.0'
+    uci set network.lan.ipaddr='__IPADDR__'
 fi
 # 设置所有网口可连接 SSH
 uci set dropbear.@dropbear[0].Interface=''
