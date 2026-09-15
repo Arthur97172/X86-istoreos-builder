@@ -35,51 +35,48 @@ ifnames=$(echo "$ifnames" | awk '{$1=$1};1')
 
 # 网络设置
 if [ "$count" -eq 1 ]; then
-    # 单网口设备 类似于NAS模式 动态获取ip模式 具体ip地址取决于上一级路由器给它分配的ip 也方便后续你使用web页面设置旁路由
-    # 单网口设备 不支持修改ip 不要在此处修改ip 单网口采用dhcp模式 删除默认的192.168.1.1
+    # 单网口设备：强制为 DHCP 模式，清理所有静态 IP 配置
     uci set network.lan.proto='dhcp'
     uci delete network.lan.ipaddr
     uci delete network.lan.netmask
     uci delete network.lan.gateway     
-    uci delete network.lan.dns 
+    uci delete network.lan.dns
     uci commit network
 elif [ "$count" -gt 1 ]; then
-    # 提取第一个接口作为WAN
-    wan_ifname=$(echo "$ifnames" | awk '{print $1}')
-    # 剩余接口保留给LAN
-    lan_ifnames=$(echo "$ifnames" | cut -d ' ' -f2-)
-    # 设置WAN接口基础配置
+    # 多网口配置 WAN
     uci set network.wan=interface
-    # 提取第一个接口作为WAN
     uci set network.wan.device="$wan_ifname"
-    # WAN接口默认DHCP
     uci set network.wan.proto='dhcp'
-    # 设置WAN6绑定网口eth0
-    uci set network.wan6=interface
-    uci set network.wan6.device="$wan_ifname"
-    # 更新LAN接口成员
-    # 查找对应设备的section名称
+    
+    # 绑定 br-lan 端口
     section=$(uci show network | awk -F '[.=]' '/\.@?device\[\d+\]\.name=.br-lan.$/ {print $2; exit}')
-    if [ -z "$section" ]; then
-        echo "error：cannot find device 'br-lan'." >>$LOGFILE
-    else
-        # 删除原来的ports列表
+    if [ -n "$section" ]; then
         uci -q delete "network.$section.ports"
-        # 添加新的ports列表
-        for port in $lan_ifnames; do
-            uci add_list "network.$section.ports"="$port"
-        done
-        echo "ports of device 'br-lan' are update." >>$LOGFILE
+        for port in $lan_ifnames; do uci add_list "network.$section.ports"="$port"; done
     fi
-    # LAN口设置静态IP
-    # 注意：如果是单网口且用户在 Action 选了 DHCP，Workflow 会删掉下面这两行并把 proto 改为 dhcp
+
+    # PPPoE 逻辑
+    if [ "$enable_pppoe" = "yes" ]; then
+        uci set network.wan.proto='pppoe'
+        uci set network.wan.username="$pppoe_account"
+        uci set network.wan.password="$pppoe_password"
+    fi
+
+    # 多网口才允许设置 LAN 静态 IP（此段会被 Workflow 的 sed 匹配并修改）
     uci set network.lan.proto='static'
     uci set network.lan.netmask='255.255.255.0'
     uci set network.lan.ipaddr='__IPADDR__'
 fi
-# 设置所有网口可连接 SSH
+
+# 权限与服务
+uci delete ttyd.@ttyd[0].interface
 uci set dropbear.@dropbear[0].Interface=''
+uci commit network
 uci commit
+
+# 清理并还原 Banner
+cp /etc/banner1/banner /etc/
+rm -r /etc/banner1
 
 # 设置作者描述信息
 FILE_PATH="/etc/openwrt_release"
