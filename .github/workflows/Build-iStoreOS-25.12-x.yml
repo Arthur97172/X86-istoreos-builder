@@ -175,12 +175,6 @@ jobs:
         ROOTFS_PARTSIZE: ${{ env.ROOTFS_PARTSIZE }}
         INCLUDE_DOCKER: ${{ inputs.include_docker }}
       run: |
-        echo "打印imagebuilder目录结构"
-        tree -L 1
-        echo "打印repositories"
-        cat repositories.conf
-        echo "打印Makefile"
-        cat Makefile |grep here
         bash ./build25.sh
 
     - name: 📅 获取当前日期
