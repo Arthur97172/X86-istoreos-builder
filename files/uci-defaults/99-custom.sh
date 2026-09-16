@@ -32,42 +32,76 @@ ifnames=$(echo "$ifnames" | awk '{$1=$1};1')
 
 # 网络设置
 if [ "$count" -eq 1 ]; then
-    # 单网口设备：强制为 DHCP 模式，清理所有静态 IP 配置
+    # 单网口设备：采用 DHCP 模式
+    # IP 地址由上级路由器自动分配
+    # 单网口设备不支持在此处修改 IP
     uci set network.lan.proto='dhcp'
     uci delete network.lan.ipaddr
     uci delete network.lan.netmask
-    uci delete network.lan.gateway     
+    uci delete network.lan.gateway
     uci delete network.lan.dns
-    uci commit network
+
 elif [ "$count" -gt 1 ]; then
-    # 多网口配置 WAN
+    # 提取第一个接口作为 WAN
+    wan_ifname=$(echo "$ifnames" | awk '{print $1}')
+
+    # 剩余接口作为 LAN
+    lan_ifnames=$(echo "$ifnames" | cut -d ' ' -f2-)
+
+    # =========================
+    # WAN 配置
+    # =========================
     uci set network.wan=interface
     uci set network.wan.device="$wan_ifname"
     uci set network.wan.proto='dhcp'
-    
-    # 绑定 br-lan 端口
-    section=$(uci show network | awk -F '[.=]' '/\.@?device\[\d+\]\.name=.br-lan.$/ {print $2; exit}')
-    if [ -n "$section" ]; then
+
+    # =========================
+    # WAN6 配置
+    # =========================
+    uci set network.wan6=interface
+    uci set network.wan6.device="$wan_ifname"
+
+    # =========================
+    # br-lan 端口配置
+    # =========================
+    # 查找名称为 br-lan 的 device section
+    section=$(uci show network | awk -F '[.=]' \
+        '/\.@?device\[\d+\]\.name=.br-lan.$/ {print $2; exit}')
+
+    if [ -z "$section" ]; then
+        echo "error: cannot find device 'br-lan'." >> "$LOGFILE"
+    else
+        # 删除原来的 ports 列表
         uci -q delete "network.$section.ports"
-        for port in $lan_ifnames; do uci add_list "network.$section.ports"="$port"; done
+
+        # 将剩余网口加入 br-lan
+        for port in $lan_ifnames; do
+            uci add_list "network.$section.ports"="$port"
+        done
+
+        echo "ports of device 'br-lan' updated." >> "$LOGFILE"
     fi
 
-    # PPPoE 逻辑
-    if [ "$enable_pppoe" = "yes" ]; then
-        uci set network.wan.proto='pppoe'
-        uci set network.wan.username="$pppoe_account"
-        uci set network.wan.password="$pppoe_password"
-    fi
-
-    # 多网口才允许设置 LAN 静态 IP（此段会被 Workflow 的 sed 匹配并修改）
+    # =========================
+    # LAN 配置
+    # =========================
+    # 多网口设备使用静态 IP
+    # __IPADDR__ 会由 Workflow 中的 sed 自动替换
     uci set network.lan.proto='static'
-    uci set network.lan.netmask='255.255.255.0'
     uci set network.lan.ipaddr='__IPADDR__'
+    uci set network.lan.netmask='255.255.255.0'
 fi
 
-# 权限与服务
+# =========================
+# SSH / Web 管理
+# =========================
+# 设置所有网口可连接 SSH
 uci delete ttyd.@ttyd[0].interface
 uci set dropbear.@dropbear[0].Interface=''
+
+# =========================
+# 保存配置
+# =========================
 uci commit network
 uci commit
 
