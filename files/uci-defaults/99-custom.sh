@@ -16,9 +16,6 @@ uci set luci.main.lang='zh_cn'
 uci commit system
 uci commit luci
 
-# 设置所有网口可访问网页终端
-uci delete ttyd.@ttyd[0].interface
-
 # 计算网卡数量
 count=0
 ifnames=""
