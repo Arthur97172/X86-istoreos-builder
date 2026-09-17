@@ -16,7 +16,7 @@
   [![](https://img.shields.io/badge/-免责声明-FFFFFF.svg)](#-免责声明-)
 </div>
 
----
+------
 
 ## 🤔 项目介绍 [![](https://img.shields.io/badge/-项目介绍-FFFFFF.svg)](#-项目介绍-)
 **目标是提供一个纯净的iStoreOS系统, 支持24.10.x和25.12.x版本编译，并可选择是否包含Docker。** 
