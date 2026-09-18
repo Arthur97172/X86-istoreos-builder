@@ -53,7 +53,7 @@
 
 ✅ 支持 - ⏳ 计划中 - ⭕ 不支持
 
-用户可根据自己的实际需要对配置文件进行调节24.10.x版本 /shell/custom-packages.sh; 25.12.x则是 /shell/apk-custom-packages.sh
+*** 用户可根据自己的实际需要对配置文件进行调节24.10.x版本 /shell/custom-packages.sh; 25.12.x则是 /shell/apk-custom-packages.sh ***
 
 </div>
 
