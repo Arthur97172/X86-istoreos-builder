@@ -28,6 +28,8 @@ PACKAGES="$PACKAGES base-files block-mount ca-bundle ca-certificates dnsmasq-ful
 PACKAGES="$PACKAGES -libustream-mbedtls -libustream-wolfssl"
 PACKAGES="$PACKAGES kmod-tcp-bbr"
 PACKAGES="$PACKAGES tmux"
+PACKAGES="$PACKAGES intel-firmware"
+PACKAGES="$PACKAGES bash curl tar"
 
 # [Intel 网卡驱动]
 PACKAGES="$PACKAGES kmod-8139cp kmod-8139too kmod-e1000e kmod-i40e kmod-igb kmod-igbvf kmod-igc kmod-ixgbe kmod-ixgbevf kmod-amazon-ena kmod-amd-xgbe kmod-bnx2 kmod-e1000 kmod-dwmac-intel kmod-forcedeth kmod-tg3 kmod-vmxnet3 kmod-drm-i915"
