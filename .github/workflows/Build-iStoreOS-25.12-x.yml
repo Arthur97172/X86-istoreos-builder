@@ -6,11 +6,12 @@ on:
       build_version:
         description: "请选择构建版本 (latest 为官网最新)"
         required: true
-        default: '20260731'
+        default: 'latest'
         type: choice
         options:
           - 'latest'
-          - '20260911'        
+          - '20260911' 
+          - '20260924'          
       luci_version:
         description: "选择luci版本"
         required: true
