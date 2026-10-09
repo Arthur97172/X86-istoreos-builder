@@ -41,8 +41,10 @@ PACKAGES="$PACKAGES kmod-r8101 kmod-r8125 kmod-r8126 kmod-r8168 kmod-r8169 kmod-
 # [USB / HID / 其他硬件]
 PACKAGES="$PACKAGES kmod-usb-hid kmod-usb-net kmod-usb-net-asix kmod-usb-net-asix-ax88179 kmod-usb-core kmod-usb3 kmod-usb2 kmod-brcmfmac kmod-brcmsmac brcmfmac-firmware-usb"
 
-# [无线驱动 - 联发科 mt792x]
-PACKAGES="$PACKAGES kmod-usb-ohci kmod-usb-ohci-pci kmod-usb2-pci usbutils kmod-mac80211 kmod-mt7921-common kmod-mt7921-firmware kmod-mt7921e kmod-mt7921u kmod-mt7922-firmware kmod-mt7925-common kmod-mt7925-firmware kmod-mt7925e kmod-mt7925u kmod-mt792x-common kmod-mt792x-usb kmod-mt7992-23-firmware kmod-mt7992-firmware kmod-mt7996-233-firmware kmod-mt7996-firmware kmod-mt7996-firmware-common kmod-mt7996e kmod-mtk-t7xx"
+# [联发科网卡驱动 mt792x]
+PACKAGES="$PACKAGES kmod-mt7921e kmod-mt7921u mt7921-firmware"
+PACKAGES="$PACKAGES kmod-mt7925e kmod-mt7925u mt7925-firmware"
+PACKAGES="$PACKAGES kmod-mt7996e kmod-mt7996-firmware kmod-mt7996-firmware-common"
 
 # [文件系统]
 PACKAGES="$PACKAGES kmod-fs-f2fs kmod-fs-vfat kmod-nf-nathelper kmod-nf-nathelper-extra kmod-nft-offload kmod-nft-tproxy"
