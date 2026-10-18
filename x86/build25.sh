@@ -28,6 +28,7 @@ PACKAGES="$PACKAGES base-files block-mount ca-bundle ca-certificates dnsmasq-ful
 PACKAGES="$PACKAGES -libustream-mbedtls -libustream-wolfssl"
 PACKAGES="$PACKAGES kmod-tcp-bbr"
 PACKAGES="$PACKAGES tmux"
+PACKAGES="$PACKAGES nano"
 PACKAGES="$PACKAGES kmod-drm-i915"
 PACKAGES="$PACKAGES i915-firmware"
 PACKAGES="$PACKAGES bash curl tar"
