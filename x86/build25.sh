@@ -44,8 +44,8 @@ PACKAGES="$PACKAGES kmod-r8101 kmod-r8125 kmod-r8126 kmod-r8168 kmod-r8169 kmod-
 PACKAGES="$PACKAGES kmod-usb-hid kmod-usb-net kmod-usb-net-asix kmod-usb-net-asix-ax88179 kmod-usb-core kmod-usb3 kmod-usb2 kmod-brcmfmac kmod-brcmsmac brcmfmac-firmware-usb"
 
 # [联发科网卡驱动 mt792x]
-PACKAGES="$PACKAGES kmod-mt7921e kmod-mt7921u"
-PACKAGES="$PACKAGES kmod-mt7925e kmod-mt7925u"
+PACKAGES="$PACKAGES kmod-mt7921e"
+PACKAGES="$PACKAGES kmod-mt7925e"
 PACKAGES="$PACKAGES kmod-mt7996e kmod-mt7996-firmware kmod-mt7996-firmware-common"
 
 # [文件系统]
@@ -284,12 +284,6 @@ fi
 # 步骤3: 合并第三方插件到包列表
 # ============================================
 PACKAGES="$PACKAGES $CUSTOM_PACKAGES"
-
-# [Docker 插件]
-if [ "$INCLUDE_DOCKER" = "yes" ]; then
-    echo "🐳 Docker enabled, adding docker packages"
-    PACKAGES="$PACKAGES docker docker-compose luci-app-dockerman luci-i18n-dockerman-zh-cn"
-fi
 
 # 若构建openclash 则添加内核
 if echo "$PACKAGES" | grep -q "luci-app-openclash"; then
